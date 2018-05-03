@@ -26,21 +26,6 @@ lazy val scala212Version      = "2.12.5"
 // Check bincompat versus this version.
 lazy val binaryCompatibleVersion = "0.5.2"
 
-// Our set of warts
-lazy val doobieWarts =
-  Warts.allBut(
-    Wart.Any,                 // false positives
-    Wart.ArrayEquals,         // false positives
-    Wart.Nothing,             // false positives
-    Wart.Null,                // Java API under the hood; we have to deal with null
-    Wart.Product,             // false positives
-    Wart.Serializable,        // false positives
-    Wart.ImplicitConversion,  // we know what we're doing
-    Wart.Throw,               // TODO: switch to ApplicativeError.fail in most places
-    Wart.PublicInference,     // fails https://github.com/wartremover/wartremover/issues/398
-    Wart.ImplicitParameter    // only used for Pos, but evidently can't be suppressed
-  )
-
 // This is used in a couple places. Might be nice to separate these things out.
 lazy val postgisDep = "net.postgis" % "postgis-jdbc" % postGisVersion
 
@@ -146,10 +131,6 @@ lazy val commonSettings =
          |For more information see LICENSE or https://opensource.org/licenses/MIT
          |""".stripMargin
     )),
-
-    // Wartremover in compile and test (not in Console)
-    wartremoverErrors in (Compile, compile) := doobieWarts,
-    wartremoverErrors in (Test,    compile) := doobieWarts,
 
     scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
